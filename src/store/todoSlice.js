@@ -37,14 +37,32 @@ const todoSlise =  createSlice({
         addTodo : (state , action) => {
             const newTodoTitle = action.payload.title
             const newId =  state.length? state[state.length - 1].id +1 : 1
-            state.push({
+            const newToDo = {
                 id : newId,
                 title : newTodoTitle,
                 isCompleted : false
-            })
+            }
+            state = [...state, newToDo] // using spread operator to create a new array
+            return state;
+        },
+        deleteToDo : (state , action) => {
+            const {id} =  action.payload
+           return state.filter((todo) => todo.id !== id);
+        },
+        updateTodo : (state , action) => {
+            const {index, title} =  action.payload
+            const updatedTodo =  [...state]
+            updatedTodo[index].title = title
+            state =  updatedTodo
+        },
+        chekboxToggle : (state , action) =>{
+            const {index} =  action.payload
+            const updatedToDo =  [...state]
+            updatedToDo[index].isCompleted = !updatedToDo[index].isCompleted
+            state = updatedToDo
         }
     }
 })
 
-export const {addTodo} = todoSlise.actions
+export const {addTodo , chekboxToggle , updateTodo , deleteToDo} = todoSlise.actions
 export default todoSlise.reducer

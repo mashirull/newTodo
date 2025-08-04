@@ -2,35 +2,21 @@ import React, { useEffect, useState } from 'react'
 import style from "../ToDo.module.css"
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { chekboxToggle, deleteToDo } from '../../../store/todoSlice'
 
-const List = () => {
+const List = ({toDo , setIndex ,setIsEditing}) => {
 
 const [serachText , setSearchText] = useState("")
-
-
-const toDo =  useSelector(state => state.todo)
-
-
+const dispatch =  useDispatch()
 
 const handleCheckbox = (i) => {
-    const updatedToDo = [...toDo];
-    updatedToDo[i].isCompleted = !updatedToDo[i].isCompleted
-    //setToDo(updatedToDo) 
-}
+      dispatch(chekboxToggle({index : i})) // Dispatch the action with the index
+  }
 
-const handleDelete = (i) =>{
-    let updatedToDo = [...toDo]
-    updatedToDo = updatedToDo.filter(ele => ele.id !== i )
-    //setToDo(updatedToDo)                
-}
-
-useEffect(()=>{
-    let updatedToDo = [...toDo]
-    updatedToDo = updatedToDo.filter(ele => ele.title.toLocaleLowerCase().includes(serachText.toLocaleLowerCase()))
-    //setToDo(updatedToDo)
-
-},[serachText])
+  const handleDeleteTodo =  (id) => {
+    dispatch(deleteToDo({id}))
+  }
 
   return (
 
@@ -41,12 +27,12 @@ useEffect(()=>{
                 <div className={style["todo-item"]} key={i}>
                     <h1 className={style["todo-title"]}>{todo.title}</h1>
                     <div>
-                        <input type='checkbox' checked = {toDo[i].isCompleted} onChange={()=> handleCheckbox(i)}
+                        <input type='checkbox' checked = {toDo[i].isCompleted} onChange={()=> {handleCheckbox(i)}}
                         className={style["todo-checkbox"]} />
-                        <span style={{ marginLeft: "16px", cursor: "pointer", color: "#8f6ed5" }} >
+                        <span style={{ marginLeft: "16px", cursor: "pointer", color: "#8f6ed5" }} onClick={()=> {setIndex(i) , setIsEditing(true)}} >
                             <FontAwesomeIcon icon={faEdit}/>
                         </span>
-                        <span style={{ marginLeft: "12px", cursor: "pointer", color: "#ff6a88" }} onClick={() =>handleDelete(todo.id)}>
+                        <span style={{ marginLeft: "12px", cursor: "pointer", color: "#ff6a88" }} onClick={() =>{handleDeleteTodo(todo.id)}}>
                             <FontAwesomeIcon icon={faTrash}/>
                         </span>
 
